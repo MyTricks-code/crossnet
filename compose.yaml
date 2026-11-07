@@ -1,0 +1,30 @@
+services:
+  server:
+    build: .
+    working_dir: /app/main
+    command: ["go", "run", "."]
+    volumes:
+      - ./uploads:/app/main/uploads
+    environment:
+      - DEV=docker
+    ports:
+      - "8080:8080"
+    networks:
+      - transfer-net
+
+  client:
+    build: .
+    working_dir: /app/client
+    command: ["go", "run", "client.go"]
+    depends_on:
+      - server
+    environment:
+      - DEV=docker
+    
+    networks:
+      - transfer-net
+
+networks:
+  transfer-net:
+    name: filetransfer-net
+    driver: bridge
