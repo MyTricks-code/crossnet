@@ -1,0 +1,12 @@
+tcp conn design:
+    message length: 4 byte:
+        -HELLO	Identify the connecting peer
+        -FILE_OFFER	Announce an incoming file
+        -ACCEPT	Receiver accepts
+        -REJECT	Receiver rejects
+        -FILE_DATA	Transfer file contents
+        -TRANSFER_COMPLETE	Confirm completion
+        -TRANSFER_ERROR	Report failure
+    message type: 1 byte
+    version: 1byte
+    payload: variable length
