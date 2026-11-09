@@ -4,34 +4,40 @@ import (
 	"context"
 	"crossnetClient/controllers"
 	"fmt"
-	"net"
+	// "net"
 )
 
 func main() {
 	fmt.Println("welcome to Crossnet")
-	conn, err := net.Dial("tcp", "localhost:8080")
-	if err != nil {
-		fmt.Print("Error starting server: ", err)
-	}
-	defer conn.Close()
 
-	fmt.Print("Server running on: localhost:8080")
-	listener, err := net.Listen("tcp", "localhost:9001")
-	if err != nil {
-		fmt.Print("Error while listening: ", err)
-		return
-	}
-	defer listener.Close()
+	menu:="1. Receive\n 2.Send"
+	fmt.Println("Menu: \n", menu)
 
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			fmt.Print("Error while connecting: ", err)
-			break
+	var choice uint8
+	fmt.Println("Enter choice: ")
+	fmt.Scan(&choice)
+
+	if choice==1{
+		listener:=controllers.ServerListener()
+		for {
+			conn, err := listener.Accept()
+			if err != nil {
+				fmt.Print("Error while connecting: ", err)
+				break
+			}
+			defer conn.Close()
+			ctx:=context.Background()
+			controllers.HandleConnection(conn, ctx)
 		}
-		defer conn.Close()
-		ctx:=context.Background()
-		controllers.HandleConnection(conn, ctx)
+	}else if choice==2{
+		conn:=controllers.SpawnConnection()
+		_,err:=conn.Write([]byte{1})
+		if err!=nil{
+			fmt.Println("Error writing to connection: ", err)
+		}
+
 	}
+
+	
 
 }
