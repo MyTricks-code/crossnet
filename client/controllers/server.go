@@ -25,7 +25,6 @@ func ServerListener() net.Listener{
 		return nil
 	}
 	fmt.Println("Server listening on 9000")
-	defer listener.Close()
 	return listener
 }
 
@@ -34,7 +33,6 @@ func SpawnConnection() net.Conn{
 	if err != nil {
 		fmt.Print("Error starting server: ", err)
 	}
-	defer conn.Close()
 	return conn
 }
 
