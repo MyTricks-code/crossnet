@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"crossnetClient/controllers"
 	"fmt"
 	// "net"
@@ -10,34 +9,21 @@ import (
 func main() {
 	fmt.Println("welcome to Crossnet")
 
-	menu:="1. Receive\n 2.Send"
+	menu := "1. Receive\n 2. Send"
 	fmt.Println("Menu: \n", menu)
 
 	var choice uint8
 	fmt.Println("Enter choice: ")
 	fmt.Scan(&choice)
 
-	if choice==1{
-		listener:=controllers.ServerListener()
-		for {
-			conn, err := listener.Accept()
-			if err != nil {
-				fmt.Print("Error while connecting: ", err)
-				break
-			}
-			defer conn.Close()
-			ctx:=context.Background()
-			controllers.HandleConnection(conn, ctx)
-		}
-	}else if choice==2{
-		conn:=controllers.SpawnConnection()
-		_,err:=conn.Write([]byte{1})
-		if err!=nil{
-			fmt.Println("Error writing to connection: ", err)
-		}
-
+	switch choice {	
+	case 1:
+		controllers.HandleConnection(1)
+		fmt.Println("Receive selected")
+	case 2:
+		fmt.Println("Send selected")
+		controllers.HandleConnection(2)
+	default:
+		fmt.Println("Invalid choice")
 	}
-
-	
-
 }
