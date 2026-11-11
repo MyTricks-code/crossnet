@@ -23,6 +23,9 @@ func main() {
 	case 2:
 		fmt.Println("Send selected")
 		controllers.HandleConnection(2)
+	case 3:
+		fmt.Println("Closing connections")
+		controllers.HandleConnection(3)
 	default:
 		fmt.Println("Invalid choice")
 	}

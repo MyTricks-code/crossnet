@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net"
+	"sync"
 	// "time"
 )
 
@@ -34,32 +35,50 @@ func SpawnConnection() net.Conn {
 	return conn
 }
 
+var globalListener *net.Listener
+
 func HandleConnection(choice int) error {
 	/*
-	1. Receive
-	2. Send
+		1. Receive
+		2. Send
 	*/
-	if choice==1 {
-		conn:=SpawnConnection()
-		FileReceive(conn)
+	if choice == 1 {
+		conn := SpawnConnection()
 		defer conn.Close()
+		FileReceive(conn)
 
-	}else if choice==2{
-		listener:=ServerListener()
+	} else if choice == 2 {
+		var wg sync.WaitGroup
+		listener := ServerListener()
+		globalListener = &listener
 		defer listener.Close()
+		
+		var fileLocation string
+		fmt.Println("Enter filePath: ")
+		fmt.Scan(&fileLocation)
+
 		for {
 			// fmt.Print("Waiting for connections....")
-			conn, err:=listener.Accept()
-			if err!=nil {
+			
+			conn, err := listener.Accept()
+			if err != nil {
 				fmt.Println("Error stablishing a connection: ", err)
-				continue
+				break
 			}
-			go func (conn net.Conn)  {
-				FileSend(conn)
+			wg.Add(1)
+			go func(conn net.Conn, fileLocation string) {
+				defer wg.Done()
 				defer conn.Close()
-			}(conn)
+				FileSend(conn, fileLocation)
+			}(conn, fileLocation)
 		}
+		wg.Wait()
+		fmt.Println("File send successfully. Close the terminal")
+		
 
+	} else if choice == 3 {
+		gl := *globalListener
+		gl.Close()
 	}
 	return nil
 }

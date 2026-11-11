@@ -9,7 +9,7 @@ import (
 	"io"
 )
 
-func FileSend(conn net.Conn) error{
+func FileSend(conn net.Conn, fileLocation string) error{
 	/*
 	Order of sending: 
 	File name size
@@ -17,11 +17,6 @@ func FileSend(conn net.Conn) error{
 	File size
 	File actual bites
 	*/
-
-	var fileLocation string
-	fmt.Println("Enter filePath: ")
-
-	fmt.Scan(&fileLocation)
 
 	file,err:=os.Open(fileLocation)
 	if err!=nil{
@@ -60,7 +55,6 @@ func FileSend(conn net.Conn) error{
 		fmt.Println("Error sending file:", err)
 		return err
 	}
-	fmt.Println("File send successfully")
 	return nil
 }
 
@@ -75,7 +69,7 @@ func FileReceive(conn net.Conn) error{
 	var fileNameSize uint32
 	var fileSize uint64
 	err=binary.Read(conn, binary.BigEndian, &fileNameSize)
-	
+
 	fileNamebuf:=make([]byte, fileNameSize)
 	_,err=io.ReadFull(conn, fileNamebuf)
 
