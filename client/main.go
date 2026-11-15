@@ -16,17 +16,23 @@ func main() {
 	fmt.Println("Enter choice: ")
 	fmt.Scan(&choice)
 
-	switch choice {	
-	case 1:
-		controllers.HandleConnection(1)
-		fmt.Println("Receive selected")
-	case 2:
-		fmt.Println("Send selected")
-		controllers.HandleConnection(2)
-	case 3:
-		fmt.Println("Closing connections")
-		controllers.HandleConnection(3)
-	default:
-		fmt.Println("Invalid choice")
+	for{
+		switch choice {	
+		case 1:
+			fmt.Println("Receive selected")
+			controllers.HandleConnection(1)
+		case 2:
+			fmt.Println("Send selected")
+			controllers.HandleConnection(2)
+		case 3:
+			fmt.Println("Closing connections")
+			controllers.HandleConnection(3)
+			
+		default:
+			fmt.Println("Invalid choice")
+		}
+		fmt.Println("Enter choice again: ")
+		fmt.Scan(&choice)
 	}
+	
 }
